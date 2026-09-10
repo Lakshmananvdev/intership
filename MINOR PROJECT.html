@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Complete HTML Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f6f5f1;
+    --card:#ffffff;
+    --ink:#1c1b22;
+    --ink-soft:#5b5a66;
+    --line:#e3e1d9;
+    --accent:#2f2a6b;
+    --accent-soft:#eceafc;
+    --accent-strong:#211d52;
+    --error:#b3403a;
+    --error-soft:#fbebe9;
+    --success:#1f6d52;
+    --success-soft:#e7f4ee;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(28,27,34,0.04), 0 8px 24px rgba(28,27,34,0.06);
+    --bg-deep:#12102b;
+    --bg-deep-2:#1c1846;
+    --on-dark:#f2f0f8;
+    --on-dark-soft:#b3aed4;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background-color:var(--bg-deep);
+    background-image:
+      /* warm coral glow, upper right */
+      radial-gradient(560px 420px at 96% -8%, rgba(214,110,90,0.28), transparent 62%),
+      /* violet glow, lower left */
+      radial-gradient(680px 520px at 2% 108%, rgba(124,109,230,0.30), transparent 60%),
+      /* soft central lift so the card reads clearly */
+      radial-gradient(900px 560px at 50% 6%, rgba(255,255,255,0.05), transparent 65%),
+      /* fine architect's grid */
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(160deg, var(--bg-deep-2), var(--bg-deep) 55%);
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    background-size: 100% 100%, 100% 100%, 100% 100%, 34px 34px, 34px 34px, 100% 100%;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat, no-repeat;
+    background-attachment: fixed, fixed, fixed, local, local, fixed;
+    color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:56px 20px 80px;
+  }
+
+  .wrap{ max-width:720px; margin:0 auto; }
+
+  header.page-head{ margin-bottom:36px; text-align:left; }
+
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(32px, 5vw, 44px);
+    letter-spacing:-0.01em;
+    margin:0 0 10px;
+    color:var(--on-dark);
+  }
+
+  p.subtitle{
+    margin:0;
+    color:var(--on-dark-soft);
+    font-size:16px;
+    max-width:52ch;
+  }
+
+  form{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+
+  fieldset{
+    border:none;
+    margin:0;
+    padding:28px clamp(20px, 5vw, 40px);
+    border-top:1px solid var(--line);
+  }
+
+  fieldset:first-of-type{ border-top:none; padding-top:32px; }
+
+  legend{
+    padding:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:18px;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+
+  legend::before{
+    content:'';
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--accent);
+    flex-shrink:0;
+  }
+
+  .section-hint{
+    margin:0 0 20px;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+
+  .field{
+    margin-bottom:20px;
+  }
+
+  .field:last-child{ margin-bottom:0; }
+
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+
+  label{
+    display:block;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:7px;
+    letter-spacing:0.01em;
+  }
+
+  label .req{ color:var(--accent); margin-left:2px; }
+  label .optional{ color:var(--ink-soft); font-weight:400; margin-left:4px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="week"],
+  select,
+  textarea{
+    width:100%;
+    padding:11px 13px;
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--ink);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:8px;
+    transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+
+  textarea{ resize:vertical; min-height:96px; }
+
+  input::placeholder, textarea::placeholder{ color:#a6a4ac; }
+
+  input:hover:not(:disabled):not(:focus),
+  select:hover:not(:disabled):not(:focus),
+  textarea:hover:not(:disabled):not(:focus){
+    border-color:#c9c6ba;
+    background:#fdfdfc;
+  }
+
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    background:#ffffff;
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+
+  input:disabled, select:disabled, textarea:disabled{
+    background:#f0efe9;
+    color:#a6a4ac;
+    cursor:not-allowed;
+    border-color:var(--line);
+  }
+
+  input.invalid, select.invalid, textarea.invalid{
+    border-color:var(--error);
+    background:var(--error-soft);
+  }
+
+  input.invalid:focus, select.invalid:focus, textarea.invalid:focus{
+    box-shadow:0 0 0 3px rgba(179,64,58,0.14);
+  }
+
+  .error-msg{
+    display:none;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    color:var(--error);
+    margin-top:6px;
+  }
+  .error-msg.show{ display:flex; }
+
+  .hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  /* Select multiple */
+  select[multiple]{ min-height:110px; }
+
+  /* Range */
+  .range-wrap{ display:flex; align-items:center; gap:14px; }
+  input[type="range"]{
+    flex:1;
+    -webkit-appearance:none;
+    appearance:none;
+    height:4px;
+    border-radius:2px;
+    background:var(--line);
+    outline:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:18px; height:18px;
+    border-radius:50%;
+    background:var(--accent);
+    border:3px solid #fff;
+    box-shadow:0 0 0 1px var(--accent);
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover{ transform:scale(1.12); }
+  input[type="range"]::-moz-range-thumb{
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--accent);
+    border:3px solid #fff;
+    box-shadow:0 0 0 1px var(--accent);
+    cursor:pointer;
+  }
+  .range-value{
+    min-width:42px;
+    text-align:center;
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent-strong);
+    background:var(--accent-soft);
+    border-radius:6px;
+    padding:4px 8px;
+  }
+
+  /* Color */
+  .color-wrap{ display:flex; align-items:center; gap:12px; }
+  input[type="color"]{
+    -webkit-appearance:none;
+    appearance:none;
+    width:44px; height:44px;
+    padding:0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    cursor:pointer;
+    background:none;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper{ padding:3px; }
+  input[type="color"]::-webkit-color-swatch{ border-radius:6px; border:none; }
+  .color-value{ font-size:13px; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+
+  /* File */
+  .file-drop{
+    border:1.5px dashed var(--line);
+    border-radius:8px;
+    padding:18px;
+    text-align:center;
+    background:var(--paper);
+    transition:border-color .18s ease, background .18s ease;
+    cursor:pointer;
+  }
+  .file-drop:hover{ border-color:var(--accent); background:var(--accent-soft); }
+  .file-drop input[type="file"]{
+    display:block;
+    width:100%;
+    font-size:13.5px;
+  }
+  .file-drop .file-label{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+
+  /* Radio / Checkbox */
+  .choice-group{ display:flex; flex-wrap:wrap; gap:10px 22px; }
+  .choice{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .choice input[type="radio"],
+  .choice input[type="checkbox"]{
+    width:17px; height:17px;
+    accent-color:var(--accent);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+
+  /* Buttons */
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    padding:26px clamp(20px, 5vw, 40px) 32px;
+    background:var(--paper);
+    border-top:1px solid var(--line);
+  }
+
+  button{
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:600;
+    padding:12px 22px;
+    border-radius:8px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+  }
+  button:active{ transform:translateY(1px); }
+
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(47,42,107,0.28);
+  }
+  .btn-primary:hover{ background:var(--accent-strong); box-shadow:0 6px 18px rgba(47,42,107,0.34); }
+
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border-color:var(--line);
+  }
+  .btn-ghost:hover{ border-color:#b9b6aa; background:#fdfdfc; }
+
+  .btn-outline{
+    background:#fff;
+    color:var(--accent);
+    border-color:var(--accent-soft);
+  }
+  .btn-outline:hover{ background:var(--accent-soft); }
+
+  /* Success overlay */
+  .success-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(28,27,34,0.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .success-overlay.show{ display:flex; }
+
+  .success-card{
+    background:#fff;
+    border-radius:14px;
+    padding:36px 32px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.25);
+    animation:pop .22s ease;
+  }
+  @keyframes pop{ from{ transform:scale(.94); opacity:0; } to{ transform:scale(1); opacity:1; } }
+
+  .success-icon{
+    width:52px; height:52px;
+    border-radius:50%;
+    background:var(--success-soft);
+    color:var(--success);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 16px;
+    font-size:26px;
+  }
+
+  .success-card h2{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    margin:0 0 8px;
+  }
+  .success-card p{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin:0 0 22px;
+  }
+
+  footer.note{
+    text-align:center;
+    margin-top:22px;
+    font-size:12.5px;
+    color:var(--on-dark-soft);
+  }
+
+  @media (max-width:600px){
+    body{ padding:32px 14px 60px; background-attachment: scroll, scroll, scroll, local, local, scroll; }
+    .row{ grid-template-columns:1fr; }
+    fieldset{ padding:22px 18px; }
+    .actions{ padding:22px 18px 26px; flex-direction:column; }
+    .actions button{ width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="page-head">
+    <h1 class="title">Complete HTML Form</h1>
+    <p class="subtitle">Explore different HTML input types in one form.</p>
+  </header>
+
+  <form id="demoForm" novalidate>
+
+    <!-- Hidden field -->
+    <input type="hidden" name="sourceChannel" value="direct-demo" />
+
+    <!-- Personal details -->
+    <fieldset>
+      <legend>Personal details</legend>
+      <p class="section-hint">Basic information to identify the applicant.</p>
+
+      <div class="field">
+        <label for="fullName">Full name<span class="req">*</span></label>
+        <input type="text" id="fullName" name="fullName" placeholder="e.g. Ananya Sharma" required autocomplete="name" />
+        <div class="error-msg" id="err-fullName"><span>⚠</span><span>Please enter your full name.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="email">Email address<span class="req">*</span></label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          <div class="error-msg" id="err-email"><span>⚠</span><span>Enter a valid email address.</span></div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password<span class="req">*</span></label>
+          <input type="password" id="password" name="password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password" />
+          <div class="error-msg" id="err-password"><span>⚠</span><span>Password must be at least 8 characters.</span></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="age">Age<span class="req">*</span></label>
+          <input type="number" id="age" name="age" placeholder="e.g. 27" min="13" max="120" required />
+          <div class="error-msg" id="err-age"><span>⚠</span><span>Enter an age between 13 and 120.</span></div>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone number<span class="req">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="10-digit number" pattern="[0-9]{10}" required autocomplete="tel" />
+          <div class="error-msg" id="err-phone"><span>⚠</span><span>Enter a valid 10-digit phone number.</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="website">Website URL <span class="optional">(optional)</span></label>
+        <input type="url" id="website" name="website" placeholder="https://your-site.com" />
+        <div class="error-msg" id="err-website"><span>⚠</span><span>Enter a valid URL starting with http:// or https://</span></div>
+      </div>
+    </fieldset>
+
+    <!-- Schedule & search -->
+    <fieldset>
+      <legend>Schedule &amp; lookup</legend>
+      <p class="section-hint">Dates, times, and a quick search field.</p>
+
+      <div class="field">
+        <label for="search">Search</label>
+        <input type="search" id="search" name="search" placeholder="Search anything…" />
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="dob">Date of birth<span class="req">*</span></label>
+          <input type="date" id="dob" name="dob" required />
+          <div class="error-msg" id="err-dob"><span>⚠</span><span>Please select your date of birth.</span></div>
+        </div>
+
+        <div class="field">
+          <label for="preferredTime">Preferred time</label>
+          <input type="time" id="preferredTime" name="preferredTime" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="meetingDateTime">Date &amp; time</label>
+          <input type="datetime-local" id="meetingDateTime" name="meetingDateTime" />
+        </div>
+
+        <div class="field">
+          <label for="startMonth">Select month</label>
+          <input type="month" id="startMonth" name="startMonth" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="targetWeek">Select week</label>
+        <input type="week" id="targetWeek" name="targetWeek" />
+      </div>
+    </fieldset>
+
+    <!-- Preferences -->
+    <fieldset>
+      <legend>Preferences</legend>
+      <p class="section-hint">A few visual and selective inputs.</p>
+
+      <div class="field">
+        <label for="favColor">Favorite color</label>
+        <div class="color-wrap">
+          <input type="color" id="favColor" name="favColor" value="#2f2a6b" />
+          <span class="color-value" id="colorValue">#2f2a6b</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="skillLevel">Skill level</label>
+        <div class="range-wrap">
+          <input type="range" id="skillLevel" name="skillLevel" min="0" max="100" value="50" />
+          <span class="range-value" id="skillValue">50%</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="resume">Upload file<span class="req">*</span></label>
+        <div class="file-drop">
+          <div class="file-label">PDF, DOC, or image — max 5MB</div>
+          <input type="file" id="resume" name="resume" required />
+        </div>
+        <div class="error-msg" id="err-resume"><span>⚠</span><span>Please select a file to upload.</span></div>
+      </div>
+
+      <div class="field">
+        <label for="country">Country</label>
+        <select id="country" name="country">
+          <option value="">Select a country</option>
+          <option value="in">India</option>
+          <option value="us">United States</option>
+          <option value="uk">United Kingdom</option>
+          <option value="ca">Canada</option>
+          <option value="au">Australia</option>
+          <option value="de">Germany</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="skills">Skills <span class="optional">(hold Ctrl/Cmd to select multiple)</span></label>
+        <select id="skills" name="skills" multiple>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="js">JavaScript</option>
+          <option value="react">React</option>
+          <option value="design">UI/UX Design</option>
+          <option value="python">Python</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="favFramework">Favorite framework <span class="optional">(start typing)</span></label>
+        <input list="frameworks" id="favFramework" name="favFramework" placeholder="e.g. Vue" />
+        <datalist id="frameworks">
+          <option value="React"></option>
+          <option value="Vue"></option>
+          <option value="Angular"></option>
+          <option value="Svelte"></option>
+          <option value="Next.js"></option>
+        </datalist>
+      </div>
+    </fieldset>
+
+    <!-- Choices -->
+    <fieldset>
+      <legend>Choices</legend>
+      <p class="section-hint">Single and multiple selections.</p>
+
+      <div class="field">
+        <label>Gender</label>
+        <div class="choice-group">
+          <label class="choice"><input type="radio" name="gender" value="female" /> Female</label>
+          <label class="choice"><input type="radio" name="gender" value="male" /> Male</label>
+          <label class="choice"><input type="radio" name="gender" value="nonbinary" /> Non-binary</label>
+          <label class="choice"><input type="radio" name="gender" value="na" /> Prefer not to say</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Interests</label>
+        <div class="choice-group">
+          <label class="choice"><input type="checkbox" name="interests" value="music" /> Music</label>
+          <label class="choice"><input type="checkbox" name="interests" value="sports" /> Sports</label>
+          <label class="choice"><input type="checkbox" name="interests" value="tech" /> Technology</label>
+          <label class="choice"><input type="checkbox" name="interests" value="travel" /> Travel</label>
+          <label class="choice"><input type="checkbox" name="interests" value="reading" /> Reading</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="referral">Referral code <span class="optional">(disabled example)</span></label>
+        <input type="text" id="referral" name="referral" value="Locked field example" disabled />
+      </div>
+    </fieldset>
+
+    <!-- About -->
+    <fieldset>
+      <legend>About yourself</legend>
+      <p class="section-hint">Tell us a little more, in your own words.</p>
+
+      <div class="field">
+        <label for="about">About yourself</label>
+        <textarea id="about" name="about" placeholder="Write a few lines about yourself…"></textarea>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" class="btn-primary">Submit form</button>
+      <button type="reset" class="btn-ghost" id="resetBtn">Reset</button>
+      <button type="button" class="btn-outline" id="fillBtn">Fill sample data</button>
+    </div>
+  </form>
+
+  <footer class="note">This form runs entirely in your browser — nothing is sent anywhere.</footer>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+    <h2>Form submitted</h2>
+    <p>Your details were validated successfully. No data was sent to a server — this is a front-end only demo.</p>
+    <button type="button" class="btn-primary" id="closeSuccess">Close</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const form = document.getElementById('demoForm');
+
+  // Live-updating displays for range and color
+  const skillLevel = document.getElementById('skillLevel');
+  const skillValue = document.getElementById('skillValue');
+  skillLevel.addEventListener('input', () => {
+    skillValue.textContent = skillLevel.value + '%';
+  });
+
+  const favColor = document.getElementById('favColor');
+  const colorValue = document.getElementById('colorValue');
+  favColor.addEventListener('input', () => {
+    colorValue.textContent = favColor.value;
+  });
+
+  // Sample data filler (normal button demo)
+  document.getElementById('fillBtn').addEventListener('click', () => {
+    document.getElementById('fullName').value = 'Ananya Sharma';
+    document.getElementById('email').value = 'ananya@example.com';
+    document.getElementById('password').value = 'password123';
+    document.getElementById('age').value = 27;
+    document.getElementById('phone').value = '9876543210';
+    document.getElementById('website').value = 'https://example.com';
+    document.getElementById('dob').value = '1998-04-12';
+    document.getElementById('about').value = 'I enjoy building clean, accessible interfaces.';
+    clearAllErrors();
+  });
+
+  // Validation rules: each maps an input id to a validator function
+  const rules = {
+    fullName: v => v.trim().length > 0,
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+    password: v => v.length >= 8,
+    age: v => v !== '' && Number(v) >= 13 && Number(v) <= 120,
+    phone: v => /^[0-9]{10}$/.test(v),
+    website: v => v === '' || /^https?:\/\/.+\..+/.test(v),
+    dob: v => v.trim().length > 0,
+    resume: () => document.getElementById('resume').files.length > 0
+  };
+
+  function setError(id, show){
+    const input = document.getElementById(id);
+    const err = document.getElementById('err-' + id);
+    if (!input || !err) return;
+    if (show){
+      input.classList.add('invalid');
+      err.classList.add('show');
+    } else {
+      input.classList.remove('invalid');
+      err.classList.remove('show');
+    }
+  }
+
+  function clearAllErrors(){
+    Object.keys(rules).forEach(id => setError(id, false));
+  }
+
+  function validateField(id){
+    const input = document.getElementById(id);
+    const isValid = rules[id](input.value);
+    setError(id, !isValid);
+    return isValid;
+  }
+
+  // Validate on blur for instant feedback
+  Object.keys(rules).forEach(id => {
+    const input = document.getElementById(id);
+    input.addEventListener('blur', () => validateField(id));
+    input.addEventListener('input', () => {
+      if (input.classList.contains('invalid')) validateField(id);
+    });
+  });
+  document.getElementById('resume').addEventListener('change', () => validateField('resume'));
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let allValid = true;
+    Object.keys(rules).forEach(id => {
+      if (!validateField(id)) allValid = false;
+    });
+
+    if (!allValid){
+      const firstInvalid = form.querySelector('.invalid');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    document.getElementById('successOverlay').classList.add('show');
+  });
+
+  document.getElementById('closeSuccess').addEventListener('click', () => {
+    document.getElementById('successOverlay').classList.remove('show');
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    clearAllErrors();
+    setTimeout(() => {
+      skillValue.textContent = '50%';
+      colorValue.textContent = '#2f2a6b';
+    }, 0);
+  });
+})();
+</script>
+
+</body>
+</html>

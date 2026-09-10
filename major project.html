@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TasteHub — Recipes worth cooking again</title>
+<meta name="description" content="TasteHub is a home for recipes you'll actually cook again — Indian, Italian, Chinese and more, with clear steps and honest ratings.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="logo">TasteHub<span class="dot">.</span></a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="recipes.html">Recipes</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="categories.html#search-panel-anchor">Search</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-outline">Sign In</a>
+      <button class="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-copy">
+        <p class="hero-eyebrow">A kitchen notebook, online</p>
+        <h1>Discover Delicious Recipes You'll Actually Cook Again</h1>
+        <p class="lede">From weeknight biryani to a Friday-night Margherita — every recipe on TasteHub comes with clear steps, honest timing and a rating from cooks who've actually made it.</p>
+        <div class="hero-actions">
+          <a href="recipes.html" class="btn btn-primary">Explore Recipes</a>
+          <a href="categories.html" class="btn btn-outline">Browse Categories</a>
+        </div>
+        <div class="hero-stats">
+          <div><strong>120+</strong><span>Tested recipes</span></div>
+          <div><strong>10</strong><span>Cuisines covered</span></div>
+          <div><strong>4.7</strong><span>Average rating</span></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=900&q=80" alt="A spread of freshly cooked dishes on a wooden table">
+        <div class="hero-badge">
+          <span class="stars">★★★★★</span>
+          <div>
+            <strong>Chicken Biryani</strong>
+            <span>214 home cooks rated this 4.8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED RECIPES -->
+  <section class="section" id="featured">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Featured Recipes</h2>
+          <p>A handful of dishes our readers keep coming back to.</p>
+        </div>
+        <a href="recipes.html">View all recipes →</a>
+      </div>
+      <div class="recipe-grid" id="featured-grid"><!-- filled by script.js --></div>
+    </div>
+  </section>
+
+  <!-- POPULAR CATEGORIES -->
+  <section class="section" id="categories" style="background: var(--paper-dim);">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Popular Categories</h2>
+          <p>Cook by cuisine, meal, or mood.</p>
+        </div>
+        <a href="categories.html">See all categories →</a>
+      </div>
+      <div class="cat-grid">
+        <a href="categories.html#breakfast" class="cat-card">
+          <span class="emoji">🥞</span>
+          <strong>Breakfast</strong>
+          <span>Start the day right</span>
+        </a>
+        <a href="categories.html#lunch" class="cat-card">
+          <span class="emoji">🥗</span>
+          <strong>Lunch</strong>
+          <span>Quick midday meals</span>
+        </a>
+        <a href="categories.html#dinner" class="cat-card">
+          <span class="emoji">🍛</span>
+          <strong>Dinner</strong>
+          <span>Family-table favorites</span>
+        </a>
+        <a href="categories.html#desserts" class="cat-card">
+          <span class="emoji">🍰</span>
+          <strong>Desserts</strong>
+          <span>Sweet endings</span>
+        </a>
+        <a href="categories.html#indian" class="cat-card">
+          <span class="emoji">🌶️</span>
+          <strong>Indian</strong>
+          <span>Bold and spiced</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY TASTEHUB -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Why cooks trust TasteHub</h2>
+          <p>We keep the notebook honest — no filler, just what works.</p>
+        </div>
+      </div>
+      <div class="recipe-grid">
+        <article class="recipe-card" style="padding:0;">
+          <div class="body">
+            <h3>Real timing</h3>
+            <p class="desc">Prep and cook times are measured by hand, not guessed — so dinner actually lands when you plan it.</p>
+          </div>
+        </article>
+        <article class="recipe-card" style="padding:0;">
+          <div class="body">
+            <h3>Cook-tested steps</h3>
+            <p class="desc">Every recipe is written the way you'd explain it to a friend standing next to you at the stove.</p>
+          </div>
+        </article>
+        <article class="recipe-card" style="padding:0;">
+          <div class="body">
+            <h3>Your own notebook</h3>
+            <p class="desc">Favorite the dishes you love, rate what you cook, and leave notes for the next time.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo">TasteHub<span class="dot">.</span></a>
+        <p>A kitchen notebook for recipes worth cooking twice. Built by home cooks, for home cooks.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="recipes.html">Recipes</a></li>
+          <li><a href="categories.html">Categories</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul class="footer-links">
+          <li><a href="login.html">Sign In</a></li>
+          <li><a href="login.html">Create Account</a></li>
+          <li><a href="recipe.html#submit-recipe">Submit a Recipe</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <p>Questions, corrections, or a recipe you think we should test — we read every note.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TasteHub. All rights reserved.</span>
+      <span>Made for people who cook on weeknights.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

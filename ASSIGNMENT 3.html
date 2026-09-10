@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perimeter — Design & Engineering Studio</title>
+  <meta name="description" content="Perimeter is a design and engineering studio that builds digital products with the precision of architecture.">
+
+  <!-- Fonts: Fraunces (display serif, carries the brand's personality) + Inter (workhorse sans for UI/body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+/* =========================================================================
+   PERIMETER — STYLE SHEET
+   Structure of this file:
+   1. Design tokens (CSS variables)
+   2. Reset / base
+   3. Navbar
+   4. Mobile menu
+   5. Hero
+   6. Buttons
+   7. Page sections (about/services/projects/contact)
+   8. Footer
+   9. Animations
+   10. Responsive media queries
+   11. Accessibility (focus, reduced motion)
+   ========================================================================= */
+
+/* ---------------------------------------------------------------------
+   1. DESIGN TOKENS
+   A small, named palette rather than scattered hex values — makes the
+   whole theme adjustable from one place.
+--------------------------------------------------------------------- */
+:root {
+  /* Color */
+  --color-paper: #eff1ec;        /* page background — cool sage-white */
+  --color-paper-raised: #e6e9e2; /* tinted section background */
+  --color-ink: #17231f;          /* primary text */
+  --color-ink-soft: #4b5750;     /* secondary text */
+  --color-accent: #4b6358;       /* verdigris — primary accent */
+  --color-accent-dark: #38493f;  /* hover state of accent */
+  --color-brass: #a9865a;        /* secondary accent */
+  --color-line: #d8d9cf;         /* borders / dividers */
+  --color-line-strong: #c3c5b8;
+
+  /* Mesh accent colors — kept in the same family as the brand palette
+     (verdigris/brass) plus two extra hues purely for the hero mesh,
+     so the flowing background reads as colorful without clashing. */
+  --mesh-verdigris: #5c8577;
+  --mesh-brass: #c99f66;
+  --mesh-teal: #2f5c56;
+  --mesh-rose: #c97b84;
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Layout */
+  --nav-height: 76px;
+  --container-max: 1120px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 0.2s var(--ease);
+  --transition-med: 0.4s var(--ease);
+}
+
+/* ---------------------------------------------------------------------
+   2. RESET / BASE
+--------------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Offsets anchor-jump targets so the fixed navbar never covers them */
+  scroll-padding-top: var(--nav-height);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+ul { list-style: none; }
+
+/* ---------------------------------------------------------------------
+   3. NAVBAR
+   Fixed, glassmorphic, gains a shadow once the page has scrolled
+   (toggled via JS adding the .scrolled class).
+--------------------------------------------------------------------- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  z-index: 1000;
+  background: rgba(239, 241, 236, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--color-line);
+  transition: box-shadow var(--transition-med), background var(--transition-med);
+}
+
+.navbar.scrolled {
+  background: rgba(239, 241, 236, 0.92);
+  box-shadow: 0 8px 24px -12px rgba(23, 35, 31, 0.18);
+}
+
+.nav-container {
+  max-width: var(--container-max);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+  transition: color var(--transition-fast);
+}
+
+.nav-logo:hover { color: var(--color-accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Each nav item gets an animated underline built from a pseudo-element,
+   scaled from 0 to 1 on hover/active rather than toggling visibility —
+   this is what gives the smooth "grow" effect. */
+.nav-link {
+  position: relative;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+  padding: 6px 2px;
+  transition: color var(--transition-fast);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--color-ink);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Current-page / current-section indicator */
+.nav-link.active {
+  color: var(--color-ink);
+}
+
+.nav-link.active::after {
+  transform: scaleX(1);
+  background: var(--color-brass);
+}
+
+/* ---------------------------------------------------------------------
+   4. MOBILE MENU (hamburger)
+--------------------------------------------------------------------- */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--color-ink);
+  border-radius: 2px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* Transforms the three bars into an X when the menu is open */
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------------------------------------------------------------------
+   5. HERO
+--------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--nav-height) + 40px) 24px 80px;
+  overflow: hidden;
+}
+
+/* Abstract shape collage — a bold, asymmetric composition of solid
+   circles, a stroked ring, and a thin rotated bar, standing in for a
+   flat gradient. Positioned to bleed off the hero's edges so it reads
+   as a full-bleed backdrop rather than a centered graphic. */
+.hero-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.shape-ring {
+  transform-origin: 150px 170px;
+  animation: slow-rotate 90s linear infinite;
+}
+
+@keyframes slow-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Paper-grain overlay: an inline SVG noise filter tiled across the
+   hero, blended with 'overlay' so it reads as texture in both the
+   light paper and the solid shapes rather than sitting on top flatly. */
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* The centered text container itself. Flex centering on .hero handles
+   the vertical + horizontal centering required by the brief. */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  text-align: center;
+  padding: 56px 40px;
+  background: rgba(239, 241, 236, 0.62);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-md);
+}
+
+/* Drafting-plan corner brackets framing the hero copy */
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--color-brass);
+  opacity: 0.7;
+}
+
+.corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.corner-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+
+.hero-heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 4.5vw + 1rem, 3.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin-bottom: 24px;
+}
+
+.hero-description {
+  font-size: 1.05rem;
+  color: var(--color-ink-soft);
+  max-width: 46ch;
+  margin: 0 auto 36px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Small bouncing indicator hinting there is more content below the fold */
+.scroll-cue {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 36px;
+  border: 2px solid var(--color-line-strong);
+  border-radius: 12px;
+}
+
+.scroll-cue span {
+  display: block;
+  width: 4px;
+  height: 8px;
+  margin: 6px auto 0;
+  background: var(--color-brass);
+  border-radius: 2px;
+  animation: scrollCue 1.8s var(--ease) infinite;
+}
+
+/* ---------------------------------------------------------------------
+   6. BUTTONS
+--------------------------------------------------------------------- */
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid transparent;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+              background var(--transition-fast), border-color var(--transition-fast),
+              color var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -10px rgba(23, 35, 31, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: var(--color-line-strong);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-ink);
+  transform: translateY(-2px);
+}
+
+/* ---------------------------------------------------------------------
+   7. PAGE SECTIONS (about / services / projects / contact)
+--------------------------------------------------------------------- */
+.page-section {
+  padding: 100px 24px;
+  border-top: 1px solid var(--color-line);
+}
+
+.section-tinted {
+  background: var(--color-paper-raised);
+}
+
+.section-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.section-container--narrow {
+  max-width: 560px;
+  text-align: center;
+}
+
+.section-eyebrow {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-brass);
+  margin-bottom: 12px;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem);
+  margin-bottom: 20px;
+}
+
+.section-text {
+  color: var(--color-ink-soft);
+  max-width: 60ch;
+  font-size: 1.05rem;
+  margin-bottom: 28px;
+}
+
+.section-container--narrow .section-text {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Services: a divided list rather than a grid of identical cards */
+.service-list {
+  border-top: 1px solid var(--color-line);
+}
+
+.service-item {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--color-line);
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+}
+
+.service-item h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.service-item p {
+  color: var(--color-ink-soft);
+  max-width: 52ch;
+}
+
+/* Projects: same divided-list treatment, with year set apart */
+.project-list {
+  border-top: 1px solid var(--color-line);
+}
+
+.project-item {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--color-line);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  transition: padding-left var(--transition-fast);
+}
+
+.project-item:hover {
+  padding-left: 8px;
+}
+
+.project-info h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+.project-info p {
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+}
+
+.project-year {
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------
+   8. FOOTER
+--------------------------------------------------------------------- */
+.site-footer {
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--color-ink-soft);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-line);
+}
+
+/* ---------------------------------------------------------------------
+   9. ANIMATIONS
+--------------------------------------------------------------------- */
+
+/* One orchestrated entrance for the hero, staggered per child via
+   transition-delay set below. JS adds .is-visible on load. */
+.hero-content > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+
+.hero-content.is-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-content.is-visible .hero-subtitle  { transition-delay: 0.05s; }
+.hero-content.is-visible .hero-heading   { transition-delay: 0.15s; }
+.hero-content.is-visible .hero-description { transition-delay: 0.25s; }
+.hero-content.is-visible .hero-actions   { transition-delay: 0.35s; }
+.hero-content.is-visible .corner         { transition-delay: 0.4s; }
+
+@keyframes scrollCue {
+  0%   { transform: translateY(0);    opacity: 1; }
+  60%  { transform: translateY(10px); opacity: 0.2; }
+  100% { transform: translateY(0);    opacity: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   10. RESPONSIVE MEDIA QUERIES
+--------------------------------------------------------------------- */
+
+/* Tablet and below: collapse into the mobile menu */
+@media (max-width: 860px) {
+  .nav-links {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: rgba(239, 241, 236, 0.97);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--color-line);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-med);
+  }
+
+  .nav-links.open {
+    max-height: 400px;
+  }
+
+  .nav-links li {
+    width: 100%;
+  }
+
+  .nav-link {
+    display: block;
+    width: 100%;
+    padding: 18px 32px;
+  }
+
+  .nav-link::after {
+    display: none; /* underline animation doesn't suit a full-width row */
+  }
+
+  .nav-link.active {
+    background: var(--color-paper-raised);
+    color: var(--color-accent);
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .service-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .nav-container { padding: 0 20px; }
+  .nav-logo { font-size: 1.2rem; }
+
+  .hero-content { padding: 40px 20px; }
+  .hero-description { font-size: 1rem; }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn { width: 100%; text-align: center; }
+
+  .page-section { padding: 72px 20px; }
+
+  .project-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   11. ACCESSIBILITY
+--------------------------------------------------------------------- */
+
+/* Visible keyboard focus on every interactive element */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .hero-content > * {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" id="navbar">
+    <nav class="nav-container">
+
+      <!-- Brand / logo -->
+      <a href="#home" class="nav-logo" data-link>
+        Perimeter
+      </a>
+
+      <!-- Primary navigation links -->
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active" data-link>Home</a></li>
+        <li><a href="#about" class="nav-link" data-link>About</a></li>
+        <li><a href="#services" class="nav-link" data-link>Services</a></li>
+        <li><a href="#projects" class="nav-link" data-link>Projects</a></li>
+        <li><a href="#contact" class="nav-link" data-link>Contact</a></li>
+      </ul>
+
+      <!-- Mobile hamburger toggle -->
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===================== HERO / HOME ===================== -->
+    <section class="hero" id="home">
+
+      <!-- Abstract shape collage + grain texture: a bold, asymmetric
+           composition rather than a flat gradient, with a paper-grain
+           overlay for a printed, tactile feel. -->
+      <svg class="hero-shapes" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="860" cy="110" r="260" fill="var(--mesh-brass)" opacity="0.9" />
+        <circle class="shape-ring" cx="150" cy="170" r="210" fill="none" stroke="var(--mesh-verdigris)" stroke-width="46" opacity="0.85" />
+        <rect x="-60" y="360" width="1160" height="30" fill="var(--color-ink)" opacity="0.1" transform="rotate(-6 500 375)" />
+        <circle cx="130" cy="610" r="64" fill="var(--color-ink)" opacity="0.85" />
+        <circle cx="905" cy="640" r="20" fill="var(--mesh-rose)" opacity="0.95" />
+      </svg>
+
+      <div class="hero-grain" aria-hidden="true"></div>
+
+      <!-- Centered text container: subtitle, heading, description, CTAs -->
+      <div class="hero-content" id="heroContent">
+        <span class="corner corner-tl" aria-hidden="true"></span>
+        <span class="corner corner-br" aria-hidden="true"></span>
+
+        <p class="hero-subtitle">Design & engineering studio</p>
+
+        <h1 class="hero-heading">
+          We build digital products with the precision of architecture.
+        </h1>
+
+        <p class="hero-description">
+          Perimeter partners with ambitious teams to design and ship interfaces,
+          systems, and products that hold up under real use.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary" data-link>Start a project</a>
+          <a href="#projects" class="btn btn-secondary" data-link>See our work</a>
+        </div>
+      </div>
+
+      <div class="scroll-cue" aria-hidden="true"><span></span></div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="page-section" id="about">
+      <div class="section-container">
+        <p class="section-eyebrow">About</p>
+        <h2 class="section-heading">A small studio, deliberately.</h2>
+        <p class="section-text">
+          Perimeter is a ten-person studio working at the intersection of design
+          and engineering. We keep every project small enough that the same
+          people who plan it are the ones who build it, from first sketch to
+          shipped product.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="page-section section-tinted" id="services">
+      <div class="section-container">
+        <p class="section-eyebrow">Services</p>
+        <h2 class="section-heading">Where we help.</h2>
+
+        <ul class="service-list">
+          <li class="service-item">
+            <h3>Product design</h3>
+            <p>Interfaces, design systems, and product strategy built around how people actually work.</p>
+          </li>
+          <li class="service-item">
+            <h3>Engineering</h3>
+            <p>Web and mobile builds that stay maintainable long after launch day.</p>
+          </li>
+          <li class="service-item">
+            <h3>Systems & ops</h3>
+            <p>The infrastructure, tooling, and process that keep a growing product steady.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== PROJECTS ===================== -->
+    <section class="page-section" id="projects">
+      <div class="section-container">
+        <p class="section-eyebrow">Projects</p>
+        <h2 class="section-heading">Recent work.</h2>
+
+        <ul class="project-list">
+          <li class="project-item">
+            <div class="project-info">
+              <h3>Northline</h3>
+              <p>Logistics dashboard for a regional freight network.</p>
+            </div>
+            <span class="project-year">2026</span>
+          </li>
+          <li class="project-item">
+            <div class="project-info">
+              <h3>Basalt</h3>
+              <p>Design system and storefront for a materials supplier.</p>
+            </div>
+            <span class="project-year">2025</span>
+          </li>
+          <li class="project-item">
+            <div class="project-info">
+              <h3>Quietwork</h3>
+              <p>Booking and scheduling tool for independent studios.</p>
+            </div>
+            <span class="project-year">2025</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section class="page-section section-tinted" id="contact">
+      <div class="section-container section-container--narrow">
+        <p class="section-eyebrow">Contact</p>
+        <h2 class="section-heading">Tell us what you're building.</h2>
+        <p class="section-text">
+          Write to us and we'll reply within two working days with next steps.
+        </p>
+        <a href="mailto:hello@perimeter.studio" class="btn btn-primary">hello@perimeter.studio</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Perimeter Studio. All rights reserved.</p>
+  </footer>
+
+  <script>
+/* =========================================================================
+   PERIMETER — SCRIPT
+   1. Navbar shadow on scroll
+   2. Mobile hamburger menu (open/close + close on link click)
+   3. Scroll-spy: highlight the nav link matching the section in view
+   4. Hero entrance animation on load
+   ========================================================================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const navbar   = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('navLinks');
+  const links     = document.querySelectorAll('.nav-link');
+  const sections  = document.querySelectorAll('main > section[id]');
+  const heroContent = document.getElementById('heroContent');
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------------------------------------------------------
+     1. Navbar shadow/background once the page has scrolled past the
+        hero a little — keeps the navbar readable over any content.
+  --------------------------------------------------------------- */
+  const SCROLL_THRESHOLD = 24;
+
+  function updateNavbarOnScroll() {
+    if (window.scrollY > SCROLL_THRESHOLD) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }
+
+  updateNavbarOnScroll();
+  window.addEventListener('scroll', updateNavbarOnScroll, { passive: true });
+
+  /* ---------------------------------------------------------------
+     2. Mobile hamburger menu
+  --------------------------------------------------------------- */
+  function openMenu() {
+    navLinks.classList.add('open');
+    hamburger.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu() {
+    navLinks.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  }
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = navLinks.classList.contains('open');
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  // Closing the menu after choosing a link keeps the mobile flow tidy
+  links.forEach((link) => {
+    link.addEventListener('click', () => {
+      if (navLinks.classList.contains('open')) closeMenu();
+    });
+  });
+
+  // Click outside the open mobile menu to dismiss it
+  document.addEventListener('click', (event) => {
+    const clickedInsideNav = navLinks.contains(event.target) || hamburger.contains(event.target);
+    if (!clickedInsideNav && navLinks.classList.contains('open')) {
+      closeMenu();
+    }
+  });
+
+  /* ---------------------------------------------------------------
+     3. Scroll-spy: mark the nav link active for whichever section
+        currently occupies the middle of the viewport.
+  --------------------------------------------------------------- */
+  const spyObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        const id = entry.target.getAttribute('id');
+        links.forEach((link) => {
+          const matches = link.getAttribute('href') === `#${id}`;
+          link.classList.toggle('active', matches);
+        });
+      });
+    },
+    {
+      // Treats a horizontal band through the vertical middle of the
+      // viewport as "current section", accounting for the fixed navbar.
+      rootMargin: '-45% 0px -50% 0px',
+      threshold: 0,
+    }
+  );
+
+  sections.forEach((section) => spyObserver.observe(section));
+
+  /* ---------------------------------------------------------------
+     4. Hero entrance animation
+        A single, deliberate load moment rather than scroll-triggered
+        effects scattered across the page.
+  --------------------------------------------------------------- */
+  if (heroContent) {
+    if (prefersReducedMotion) {
+      heroContent.classList.add('is-visible');
+    } else {
+      // Small delay lets fonts settle before the reveal starts
+      requestAnimationFrame(() => {
+        setTimeout(() => heroContent.classList.add('is-visible'), 80);
+      });
+    }
+  }
+});
+
+  </script>
+</body>
+</html>

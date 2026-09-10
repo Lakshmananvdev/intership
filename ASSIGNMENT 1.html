@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Streamly — Learn. Watch. Grow.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0d12;
+    --bg-soft: #12151c;
+    --ink: #eef0f4;
+    --ink-dim: #9aa1b0;
+    --line: rgba(255,255,255,0.08);
+
+    /* second navbar palette */
+    --glass-bg: rgba(20, 22, 30, 0.55);
+    --glass-border: rgba(255,255,255,0.10);
+    --accent-a: #7c5cff;   /* violet */
+    --accent-b: #29d6c9;   /* teal */
+    --accent-glow: 124, 92, 255;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    min-height: 200vh;
+  }
+
+  a{ color: inherit; text-decoration: none; }
+
+  /* ============================================
+     PRIMARY (EXISTING) NAVBAR — kept simple/unchanged
+     ============================================ */
+  .primary-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: #0e1016;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .primary-header__brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+  .primary-header__brand span{
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    display:inline-block;
+  }
+  .primary-header__right{
+    display:flex;
+    align-items:center;
+    gap: 18px;
+  }
+  .primary-header__search{
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--ink-dim);
+    font-size: 13px;
+    width: 220px;
+  }
+  .primary-header__avatar{
+    width: 34px; height:34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff9966, #ff5e62);
+  }
+
+  /* ============================================
+     SECOND NAVBAR — floating glass pill
+     ============================================ */
+  .subnav-wrap{
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    padding: 18px 24px 22px;
+    background: linear-gradient(180deg, rgba(11,13,18,0.9), rgba(11,13,18,0.55) 70%, transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .subnav{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 6px;
+    border-radius: 999px;
+
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      0 8px 30px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .subnav::-webkit-scrollbar{ display:none; }
+
+  /* faint gradient ring around the pill for premium feel */
+  .subnav::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border-radius: 999px;
+    padding: 1px;
+    background: linear-gradient(120deg, rgba(124,92,255,0.55), rgba(41,214,201,0.15), rgba(124,92,255,0.0));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  /* sliding active indicator */
+  .subnav__indicator{
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    height: calc(100% - 12px);
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(120deg, rgba(124,92,255,0.28), rgba(41,214,201,0.22));
+    border: 1px solid rgba(124,92,255,0.45);
+    box-shadow: 0 0 18px rgba(var(--accent-glow), 0.35), inset 0 0 12px rgba(124,92,255,0.15);
+    transition: transform 0.35s cubic-bezier(.65,.05,.36,1), width 0.35s cubic-bezier(.65,.05,.36,1);
+    pointer-events: none;
+  }
+
+  .subnav__item{
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14.5px;
+    color: var(--ink-dim);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    transition: color 0.25s ease, transform 0.2s ease;
+  }
+
+  .subnav__item svg{
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    opacity: 0.85;
+    transition: transform 0.25s ease;
+  }
+
+  .subnav__item:hover{
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .subnav__item:hover svg{
+    transform: scale(1.08);
+  }
+
+  .subnav__item.is-active{
+    color: #fff;
+  }
+  .subnav__item.is-active svg{
+    filter: drop-shadow(0 0 4px rgba(124,92,255,0.8));
+  }
+
+  .subnav__item:focus-visible{
+    outline: 2px solid var(--accent-b);
+    outline-offset: 2px;
+  }
+
+  /* ============================================
+     Demo page content (to show context)
+     ============================================ */
+  .hero{
+    padding: 60px 32px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .grid{
+    max-width: 1100px;
+    margin: 30px auto 100px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
+  }
+  .card{
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card__thumb{
+    height: 120px;
+    background: linear-gradient(135deg, rgba(124,92,255,0.35), rgba(41,214,201,0.25));
+  }
+  .card__body{ padding: 14px 16px; }
+  .card__body h3{ margin: 0 0 6px; font-size: 14.5px; font-family:'Space Grotesk',sans-serif; }
+  .card__body p{ margin:0; font-size: 12.5px; color: var(--ink-dim); }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+
+  /* Tablet */
+  @media (max-width: 1024px){
+    .subnav-wrap{ padding: 14px 16px 18px; }
+    .subnav__item{ padding: 9px 13px; font-size: 13.5px; gap: 6px; }
+    .primary-header{ padding: 14px 20px; }
+    .primary-header__search{ width: 160px; }
+  }
+
+  /* Mobile */
+  @media (max-width: 640px){
+    .subnav-wrap{ justify-content: flex-start; padding: 12px 14px 16px; }
+    .subnav{
+      width: 100%;
+      justify-content: flex-start;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    }
+    .subnav__item{ padding: 9px 14px; font-size: 13.5px; }
+    .primary-header__search{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============================================
+       PRIMARY NAVBAR (existing header, kept intact)
+       ============================================ -->
+  <header class="primary-header">
+    <div class="primary-header__brand"><span></span>Streamly</div>
+    <div class="primary-header__right">
+      <input class="primary-header__search" type="text" placeholder="Search courses, videos...">
+      <div class="primary-header__avatar"></div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       SECOND NAVBAR (new, distinctive glass pill nav)
+       ============================================ -->
+  <nav class="subnav-wrap" aria-label="Content navigation">
+    <div class="subnav" id="subnav">
+      <div class="subnav__indicator" id="subnavIndicator"></div>
+
+      <a href="#" class="subnav__item is-active" data-key="home">
+        <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+        Home
+      </a>
+      <a href="#" class="subnav__item" data-key="trending">
+        <svg viewBox="0 0 24 24"><path d="M4 18c3-1 4-4 4-7 2 2 2 5 1 7 3-1 6-4 6-9 0-2-1-4-2-5 4 1 7 5 7 9 0 5-4 9-9 9s-9-3-7-4Z"/></svg>
+        Trending
+      </a>
+      <a href="#" class="subnav__item" data-key="latest">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Latest
+      </a>
+      <a href="#" class="subnav__item" data-key="categories">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>
+        Categories
+      </a>
+      <a href="#" class="subnav__item" data-key="tutorials">
+        <svg viewBox="0 0 24 24"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H12v16H5.5A1.5 1.5 0 0 1 4 18.5Z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H12v16h6.5a1.5 1.5 0 0 0 1.5-1.5Z"/></svg>
+        Tutorials
+      </a>
+      <a href="#" class="subnav__item" data-key="popular">
+        <svg viewBox="0 0 24 24"><path d="m12 3 2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3L3 9.5l6.4-.6Z"/></svg>
+        Popular
+      </a>
+      <a href="#" class="subnav__item" data-key="saved">
+        <svg viewBox="0 0 24 24"><path d="M6 3.5h12a.5.5 0 0 1 .5.5v17l-6.5-4-6.5 4V4a.5.5 0 0 1 .5-.5Z"/></svg>
+        Saved
+      </a>
+    </div>
+  </nav>
+
+  <!-- Demo content so the page has context -->
+  <section class="hero">
+    <h1>Pick up where curiosity left off</h1>
+    <p>A streaming and tutorial hub for the courses, talks, and deep dives worth your evening. The row above is your shortcut through all of it.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="card__thumb"></div><div class="card__body"><h3>Systems Design, Season 2</h3><p>12 episodes · Updated weekly</p></div></div>
+    <div class="card"><div class="card__thumb"></div><div class="card__body"><h3>Color Theory for Devs</h3><p>6 episodes · Beginner</p></div></div>
+    <div class="card"><div class="card__thumb"></div><div class="card__body"><h3>Rust From Scratch</h3><p>20 episodes · Intermediate</p></div></div>
+    <div class="card"><div class="card__thumb"></div><div class="card__body"><h3>Studio Lighting Basics</h3><p>8 episodes · Beginner</p></div></div>
+    <div class="card"><div class="card__thumb"></div><div class="card__body"><h3>The Weekly Deep Dive</h3><p>Live every Friday</p></div></div>
+    <div class="card"><div class="card__thumb"></div><div class="card__body"><h3>Editing With Intent</h3><p>9 episodes · Advanced</p></div></div>
+  </section>
+
+  <script>
+    (function(){
+      const subnav = document.getElementById('subnav');
+      const indicator = document.getElementById('subnavIndicator');
+      const items = Array.from(subnav.querySelectorAll('.subnav__item'));
+
+      function moveIndicator(el, animate){
+        const navRect = subnav.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const left = elRect.left - navRect.left + subnav.scrollLeft;
+        const width = elRect.width;
+
+        if(!animate){
+          indicator.style.transition = 'none';
+        }
+        indicator.style.width = width + 'px';
+        indicator.style.transform = `translateX(${left - 6}px)`;
+        if(!animate){
+          // force reflow then restore transition
+          void indicator.offsetWidth;
+          indicator.style.transition = '';
+        }
+      }
+
+      function setActive(el){
+        items.forEach(i => i.classList.remove('is-active'));
+        el.classList.add('is-active');
+        moveIndicator(el, true);
+        el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+
+      items.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          setActive(item);
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        const active = subnav.querySelector('.is-active');
+        if(active) moveIndicator(active, false);
+      });
+
+      // initial placement (wait a tick for fonts/layout)
+      window.addEventListener('load', () => {
+        const active = subnav.querySelector('.is-active');
+        moveIndicator(active, false);
+      });
+    })();
+  </script>
+
+</body>
+</html>
